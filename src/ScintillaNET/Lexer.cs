@@ -149,6 +149,11 @@ namespace ScintillaNET
         /// <summary>
         /// The R programming language lexer.
         /// </summary>
-        R = NativeMethods.SCLEX_R
+        R = NativeMethods.SCLEX_R,
+
+        /// <summary>
+        /// The Stata lexer.
+        /// </summary>
+        Stata = NativeMethods.SCLEX_STATA
     }
 }
