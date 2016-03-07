@@ -1208,6 +1208,7 @@ namespace ScintillaNET
         public const int SCLEX_SREC = 117;
         public const int SCLEX_IHEX = 118;
         public const int SCLEX_TEHEX = 119;
+        public const int SCLEX_STATA = 120;
         public const int SCLEX_AUTOMATIC = 1000;
 
         // Ada
@@ -1650,6 +1651,20 @@ namespace ScintillaNET
         public const int SCE_V_OUTPUT = 22;
         public const int SCE_V_INOUT = 23;
         public const int SCE_V_PORT_CONNECT = 24;
+
+        // Stata
+        public const int SCE_STATA_DEFAULT = 0;
+        public const int SCE_STATA_COMMENT = 1;
+        public const int SCE_STATA_COMMENTLINE = 2;
+        public const int SCE_STATA_COMMENTBLOCK = 3;
+        public const int SCE_STATA_NUMBER = 4;
+        public const int SCE_STATA_OPERATOR = 5;
+        public const int SCE_STATA_IDENTIFIER = 6;
+        public const int SCE_STATA_STRING = 7;
+        public const int SCE_STATA_TYPE = 8;
+        public const int SCE_STATA_WORD = 9;
+        public const int SCE_STATA_GLOBAL_MACRO = 10;
+        public const int SCE_STATA_MACRO = 11;
 
         #endregion Lexer Constants
 

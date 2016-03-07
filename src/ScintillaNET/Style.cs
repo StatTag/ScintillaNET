@@ -3179,5 +3179,76 @@ namespace ScintillaNET
         }
 
         #endregion Xml
+
+
+        #region Stata
+
+        /// <summary>
+        /// Style constants for use with the <see cref="Lexer.Stata" /> lexer.
+        /// </summary>
+        public static class Stata
+        {
+            /// <summary>
+            /// Default style index.
+            /// </summary>
+            public const int Default = NativeMethods.SCE_STATA_DEFAULT;
+
+            /// <summary>
+            /// Comment style index.
+            /// </summary>
+            public const int Comment = NativeMethods.SCE_STATA_COMMENT;
+
+            /// <summary>
+            /// Keyword (set 0) style index.
+            /// </summary>
+            public const int CommentLine = NativeMethods.SCE_STATA_COMMENTLINE;
+
+            /// <summary>
+            /// Keyword (set 0) style index.
+            /// </summary>
+            public const int CommentBlock = NativeMethods.SCE_STATA_COMMENTBLOCK;
+
+            /// <summary>
+            /// Base keyword (set 1) style index.
+            /// </summary>
+            public const int Number = NativeMethods.SCE_STATA_NUMBER;
+
+            /// <summary>
+            /// Other keyword (set 2) style index.
+            /// </summary>
+            public const int Operator = NativeMethods.SCE_STATA_OPERATOR;
+
+            /// <summary>
+            /// Number style index.
+            /// </summary>
+            public const int Identifier = NativeMethods.SCE_STATA_IDENTIFIER;
+
+            /// <summary>
+            /// Double-quoted string style index.
+            /// </summary>
+            public const int String = NativeMethods.SCE_STATA_STRING;
+            
+            /// <summary>
+            /// Operator style index.
+            /// </summary>
+            public const int Type = NativeMethods.SCE_STATA_TYPE;
+
+            /// <summary>
+            /// Identifier style index.
+            /// </summary>
+            public const int Word = NativeMethods.SCE_STATA_WORD;
+
+            /// <summary>
+            /// Infix style index.
+            /// </summary>
+            public const int GlobalMacro = NativeMethods.SCE_STATA_GLOBAL_MACRO;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int Macro = NativeMethods.SCE_STATA_MACRO;
+        }
+
+        #endregion Stata
     }
 }
