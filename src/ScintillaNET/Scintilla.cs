@@ -906,6 +906,16 @@ namespace ScintillaNET
             return Lines.ByteToCharPosition(pos);
         }
 
+        private static string GetModulePathLocal()
+        {
+            if (modulePath == null)
+            {
+                modulePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, (IntPtr.Size == 4 ? "x86" : "x64"), "SciLexer.dll");                
+            }
+
+            return modulePath;
+        }
+
         private static string GetModulePath()
         {
             // UI thread...
@@ -1135,7 +1145,7 @@ namespace ScintillaNET
         /// <returns>An object representing the version information of the native Scintilla library.</returns>
         public FileVersionInfo GetVersionInfo()
         {
-            var path = GetModulePath();
+            var path = GetModulePathLocal();
             var version = FileVersionInfo.GetVersionInfo(path);
 
             return version;
@@ -3569,13 +3579,14 @@ namespace ScintillaNET
             {
                 if (moduleHandle == IntPtr.Zero)
                 {
-                    var path = GetModulePath();
+                    var path = GetModulePathLocal();
 
                     // Load the native Scintilla library
                     moduleHandle = NativeMethods.LoadLibrary(path);
                     if (moduleHandle == IntPtr.Zero)
                     {
-                        var message = string.Format(CultureInfo.InvariantCulture, "Could not load the Scintilla module at the path '{0}'.", path);
+                        var message = string.Format(CultureInfo.InvariantCulture,
+                            "Could not load the Scintilla module at the path '{0}'.  Last error: {1}", path, Marshal.GetLastWin32Error());
                         throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
                     }
 
@@ -3583,8 +3594,14 @@ namespace ScintillaNET
                     var directFunctionPointer = NativeMethods.GetProcAddress(new HandleRef(this, moduleHandle), "Scintilla_DirectFunction");
                     if (directFunctionPointer == IntPtr.Zero)
                     {
-                        var message = "The Scintilla module has no export for the 'Scintilla_DirectFunction' procedure.";
-                        throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
+                        
+                        directFunctionPointer = NativeMethods.GetProcAddress(new HandleRef(this, moduleHandle), "_Scintilla_DirectFunction@16");
+                        if (directFunctionPointer == IntPtr.Zero)
+                        {
+                            var message = string.Format("The Scintilla module has no export for the 'Scintilla_DirectFunction' procedure.  Last error: {0}", 
+                                Marshal.GetLastWin32Error());
+                            throw new Win32Exception(message, new Win32Exception()); // Calls GetLastError
+                        }
                     }
 
                     // Create a managed callback
