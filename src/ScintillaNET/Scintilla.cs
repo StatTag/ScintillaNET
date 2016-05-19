@@ -916,10 +916,10 @@ namespace ScintillaNET
             return modulePath;
         }
 
-        private static string GetModulePath()
+        private static string GetModulePath(bool overrideExisting = false)
         {
             // UI thread...
-            if (modulePath == null)
+            if (modulePath == null || overrideExisting)
             {
                 // Extract the embedded SciLexer DLL
                 // http://stackoverflow.com/a/768429/2073621
@@ -947,7 +947,8 @@ namespace ScintillaNET
                                 ownsHandle = mutex.WaitOne(5000, false); // 5 sec
                                 if (ownsHandle == false)
                                 {
-                                    var timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timeout waiting for exclusive access to '{0}'.", modulePath);
+                                    var timeoutMessage = string.Format(CultureInfo.InvariantCulture,
+                                        "Timeout waiting for exclusive access to '{0}'.", modulePath);
                                     throw new TimeoutException(timeoutMessage);
                                 }
                             }
@@ -965,8 +966,10 @@ namespace ScintillaNET
                                 if (!Directory.Exists(directory))
                                     Directory.CreateDirectory(directory);
 
-                                var resource = string.Format(CultureInfo.InvariantCulture, "ScintillaNET.{0}.SciLexer.dll.gz", (IntPtr.Size == 4 ? "x86" : "x64"));
-                                using (var resourceStream = typeof(Scintilla).Assembly.GetManifestResourceStream(resource))
+                                var resource = string.Format(CultureInfo.InvariantCulture,
+                                    "ScintillaNET.{0}.SciLexer.dll.gz", (IntPtr.Size == 4 ? "x86" : "x64"));
+                                using (
+                                    var resourceStream = typeof(Scintilla).Assembly.GetManifestResourceStream(resource))
                                 using (var gzipStream = new GZipStream(resourceStream, CompressionMode.Decompress))
                                 using (var fileStream = File.Create(modulePath))
                                     gzipStream.CopyTo(fileStream);
@@ -3580,6 +3583,10 @@ namespace ScintillaNET
                 if (moduleHandle == IntPtr.Zero)
                 {
                     var path = GetModulePathLocal();
+                    if (!File.Exists(path))
+                    {
+                        path = GetModulePath(true);
+                    }
 
                     // Load the native Scintilla library
                     moduleHandle = NativeMethods.LoadLibrary(path);
