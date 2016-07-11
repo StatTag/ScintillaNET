@@ -1209,6 +1209,7 @@ namespace ScintillaNET
         public const int SCLEX_IHEX = 118;
         public const int SCLEX_TEHEX = 119;
         public const int SCLEX_STATA = 120;
+        public const int SCLEX_SAS = 121;
         public const int SCLEX_AUTOMATIC = 1000;
 
         // Ada
@@ -1665,6 +1666,24 @@ namespace ScintillaNET
         public const int SCE_STATA_WORD = 9;
         public const int SCE_STATA_GLOBAL_MACRO = 10;
         public const int SCE_STATA_MACRO = 11;
+
+        // SAS
+        public const int SCE_SAS_DEFAULT = 0;
+        public const int SCE_SAS_COMMENT = 1;
+        public const int SCE_SAS_COMMENTLINE = 2;
+        public const int SCE_SAS_COMMENTBLOCK = 3;
+        public const int SCE_SAS_NUMBER = 4;
+        public const int SCE_SAS_OPERATOR = 5;
+        public const int SCE_SAS_IDENTIFIER = 6;
+        public const int SCE_SAS_STRING = 7;
+        public const int SCE_SAS_TYPE = 8;
+        public const int SCE_SAS_WORD = 9;
+        public const int SCE_SAS_GLOBAL_MACRO = 10;
+        public const int SCE_SAS_MACRO = 11;
+        public const int SCE_SAS_MACRO_KEYWORD = 12;
+        public const int SCE_SAS_BLOCK_KEYWORD = 13;
+        public const int SCE_SAS_MACRO_FUNCTION = 14;
+        public const int SCE_SAS_STATEMENT = 15;
 
         #endregion Lexer Constants
 

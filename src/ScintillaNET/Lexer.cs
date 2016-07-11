@@ -154,6 +154,11 @@ namespace ScintillaNET
         /// <summary>
         /// The Stata lexer.
         /// </summary>
-        Stata = NativeMethods.SCLEX_STATA
+        Stata = NativeMethods.SCLEX_STATA,
+
+        /// <summary>
+        /// The SAS lexer.
+        /// </summary>
+        SAS = NativeMethods.SCLEX_SAS
     }
 }

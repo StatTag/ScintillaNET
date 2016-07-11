@@ -3250,5 +3250,95 @@ namespace ScintillaNET
         }
 
         #endregion Stata
+
+        #region SAS
+
+        /// <summary>
+        /// Style constants for use with the <see cref="Lexer.SAS" /> lexer.
+        /// </summary>
+        public static class SAS
+        {
+            /// <summary>
+            /// Default style index.
+            /// </summary>
+            public const int Default = NativeMethods.SCE_SAS_DEFAULT;
+
+            /// <summary>
+            /// Comment style index.
+            /// </summary>
+            public const int Comment = NativeMethods.SCE_SAS_COMMENT;
+
+            /// <summary>
+            /// Keyword (set 0) style index.
+            /// </summary>
+            public const int CommentLine = NativeMethods.SCE_SAS_COMMENTLINE;
+
+            /// <summary>
+            /// Keyword (set 0) style index.
+            /// </summary>
+            public const int CommentBlock = NativeMethods.SCE_SAS_COMMENTBLOCK;
+
+            /// <summary>
+            /// Base keyword (set 1) style index.
+            /// </summary>
+            public const int Number = NativeMethods.SCE_SAS_NUMBER;
+
+            /// <summary>
+            /// Other keyword (set 2) style index.
+            /// </summary>
+            public const int Operator = NativeMethods.SCE_SAS_OPERATOR;
+
+            /// <summary>
+            /// Number style index.
+            /// </summary>
+            public const int Identifier = NativeMethods.SCE_SAS_IDENTIFIER;
+
+            /// <summary>
+            /// Double-quoted string style index.
+            /// </summary>
+            public const int String = NativeMethods.SCE_SAS_STRING;
+
+            /// <summary>
+            /// Operator style index.
+            /// </summary>
+            public const int Type = NativeMethods.SCE_SAS_TYPE;
+
+            /// <summary>
+            /// Identifier style index.
+            /// </summary>
+            public const int Word = NativeMethods.SCE_SAS_WORD;
+
+            /// <summary>
+            /// Infix style index.
+            /// </summary>
+            public const int GlobalMacro = NativeMethods.SCE_SAS_GLOBAL_MACRO;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int Macro = NativeMethods.SCE_SAS_MACRO;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int MacroKeyword = NativeMethods.SCE_SAS_MACRO_KEYWORD;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int BlockKeyword = NativeMethods.SCE_SAS_BLOCK_KEYWORD;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int MacroFunction = NativeMethods.SCE_SAS_MACRO_FUNCTION;
+
+            /// <summary>
+            /// Unclosed infix EOL style index.
+            /// </summary>
+            public const int Statement = NativeMethods.SCE_SAS_STATEMENT;
+        }
+
+        #endregion SAS
     }
 }
