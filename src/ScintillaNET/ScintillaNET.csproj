@@ -127,6 +127,7 @@
     <Compile Include="SearchFlags.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="SelectionCollection.cs" />
+    <Compile Include="Status.cs" />
     <Compile Include="Style.cs" />
     <Compile Include="StyleCase.cs" />
     <Compile Include="StyleCollection.cs" />
@@ -172,10 +173,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="x64\SciLexer.dll.gz" />
+    <EmbeddedResource Include="x64\SciLexer.dll.gz" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="x86\SciLexer.dll.gz" />
+    <EmbeddedResource Include="x86\SciLexer.dll.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

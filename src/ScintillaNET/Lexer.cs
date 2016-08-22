@@ -62,6 +62,11 @@ namespace ScintillaNET
         Html = NativeMethods.SCLEX_HTML,
 
         /// <summary>
+        /// JavaScript Object Notation (JSON) lexer.
+        /// </summary>
+        Json = NativeMethods.SCLEX_JSON,
+
+        /// <summary>
         /// The Lisp language lexer.
         /// </summary>
         Lisp = NativeMethods.SCLEX_LISP,
@@ -85,6 +90,11 @@ namespace ScintillaNET
         /// The PHP: Hypertext Preprocessor (PHP) script lexer.
         /// </summary>
         PhpScript = NativeMethods.SCLEX_PHPSCRIPT,
+
+        /// <summary>
+        /// PowerShell script lexer.
+        /// </summary>
+        PowerShell = NativeMethods.SCLEX_POWERSHELL,
 
         /// <summary>
         /// Properties file (INI) lexer.
@@ -154,6 +164,11 @@ namespace ScintillaNET
         /// <summary>
         /// The Stata lexer.
         /// </summary>
-        Stata = NativeMethods.SCLEX_STATA
+        Stata = NativeMethods.SCLEX_STATA,
+
+        /// <summary>
+        /// The SAS lexer.
+        /// </summary>
+        SAS = NativeMethods.SCLEX_SAS
     }
 }
