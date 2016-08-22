@@ -257,6 +257,8 @@ namespace ScintillaNET
         public const int SC_STATUS_OK = 0;
         public const int SC_STATUS_FAILURE = 1;
         public const int SC_STATUS_BADALLOC = 2;
+        public const int SC_STATUS_WARN_START = 1000;
+        public const int SC_STATUS_WARN_REGEX = 1001;
 
         // Dwell
         public const int SC_TIME_FOREVER = 10000000;
@@ -1208,8 +1210,9 @@ namespace ScintillaNET
         public const int SCLEX_SREC = 117;
         public const int SCLEX_IHEX = 118;
         public const int SCLEX_TEHEX = 119;
-        public const int SCLEX_STATA = 120;
-        public const int SCLEX_SAS = 121;
+        public const int SCLEX_JSON = 120;
+        public const int SCLEX_STATA = 200;
+        public const int SCLEX_SAS = 201;
         public const int SCLEX_AUTOMATIC = 1000;
 
         // Ada
@@ -1350,6 +1353,22 @@ namespace ScintillaNET
         public const int SCE_H_VALUE = 19;
         public const int SCE_H_XCCOMMENT = 20;
 
+        // JSON
+        public const int SCE_JSON_DEFAULT = 0;
+        public const int SCE_JSON_NUMBER = 1;
+        public const int SCE_JSON_STRING = 2;
+        public const int SCE_JSON_STRINGEOL = 3;
+        public const int SCE_JSON_PROPERTYNAME = 4;
+        public const int SCE_JSON_ESCAPESEQUENCE = 5;
+        public const int SCE_JSON_LINECOMMENT = 6;
+        public const int SCE_JSON_BLOCKCOMMENT = 7;
+        public const int SCE_JSON_OPERATOR = 8;
+        public const int SCE_JSON_URI = 9;
+        public const int SCE_JSON_COMPACTIRI = 10;
+        public const int SCE_JSON_KEYWORD = 11;
+        public const int SCE_JSON_LDKEYWORD = 12;
+        public const int SCE_JSON_ERROR = 13;
+
         // Lisp
         public const int SCE_LISP_DEFAULT = 0;
         public const int SCE_LISP_COMMENT = 1;
@@ -1449,6 +1468,25 @@ namespace ScintillaNET
         public const int SCE_PL_STRING_QQ_VAR = 64;
         public const int SCE_PL_STRING_QX_VAR = 65;
         public const int SCE_PL_STRING_QR_VAR = 66;
+
+        // PowerShell
+        public const int SCE_POWERSHELL_DEFAULT = 0;
+        public const int SCE_POWERSHELL_COMMENT = 1;
+        public const int SCE_POWERSHELL_STRING = 2;
+        public const int SCE_POWERSHELL_CHARACTER = 3;
+        public const int SCE_POWERSHELL_NUMBER = 4;
+        public const int SCE_POWERSHELL_VARIABLE = 5;
+        public const int SCE_POWERSHELL_OPERATOR = 6;
+        public const int SCE_POWERSHELL_IDENTIFIER = 7;
+        public const int SCE_POWERSHELL_KEYWORD = 8;
+        public const int SCE_POWERSHELL_CMDLET = 9;
+        public const int SCE_POWERSHELL_ALIAS = 10;
+        public const int SCE_POWERSHELL_FUNCTION = 11;
+        public const int SCE_POWERSHELL_USER1 = 12;
+        public const int SCE_POWERSHELL_COMMENTSTREAM = 13;
+        public const int SCE_POWERSHELL_HERE_STRING = 14;
+        public const int SCE_POWERSHELL_HERE_CHARACTER = 15;
+        public const int SCE_POWERSHELL_COMMENTDOCKEYWORD = 16;
 
         // Properties
         public const int SCE_PROPS_DEFAULT = 0;

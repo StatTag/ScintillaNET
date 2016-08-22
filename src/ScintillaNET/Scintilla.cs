@@ -26,7 +26,7 @@ namespace ScintillaNET
         #region Fields
 
         // WM_DESTROY workaround
-        private static bool? reparentGlobal;
+        private static bool? reparentAll;
         private bool reparent;
 
         // Static module data
@@ -64,6 +64,7 @@ namespace ScintillaNET
         private static readonly object hotspotReleaseClickEventKey = new object();
         private static readonly object indicatorClickEventKey = new object();
         private static readonly object indicatorReleaseEventKey = new object();
+        private static readonly object zoomChangedEventKey = new object();
 
         // The goods
         private IntPtr sciPtr;
@@ -82,6 +83,9 @@ namespace ScintillaNET
 
         // Pinned data
         private IntPtr fillUpChars;
+
+        // For highlight calculations
+        private string lastCallTip = string.Empty;
 
         /// <summary>
         /// A constant used to specify an infinite mouse dwell wait time.
@@ -366,9 +370,19 @@ namespace ScintillaNET
         /// </summary>
         /// <param name="hlStart">The zero-based index in the call tip text to start highlighting.</param>
         /// <param name="hlEnd">The zero-based index in the call tip text to stop highlighting (exclusive).</param>
-        public void CallTipSetHlt(int hlStart, int hlEnd)
+        public unsafe void CallTipSetHlt(int hlStart, int hlEnd)
         {
-            // Call tips are ASCII only so (fortunately) we don't need to adjust these positions
+            // To do the char->byte translation we need to use a cached copy of the last call tip
+            hlStart = Helpers.Clamp(hlStart, 0, lastCallTip.Length);
+            hlEnd = Helpers.Clamp(hlEnd, 0, lastCallTip.Length);
+
+            fixed (char* cp = lastCallTip)
+            {
+                hlEnd = Encoding.GetByteCount(cp + hlStart, hlEnd - hlStart);  // The bytes between start and end
+                hlStart = Encoding.GetByteCount(cp, hlStart);                  // The bytes between 0 and start
+                hlEnd += hlStart;                                              // The bytes between 0 and end
+            }
+
             DirectMessage(NativeMethods.SCI_CALLTIPSETHLT, new IntPtr(hlStart), new IntPtr(hlEnd));
         }
 
@@ -388,8 +402,8 @@ namespace ScintillaNET
         /// <param name="posStart">The zero-based document position where the call tip window should be aligned.</param>
         /// <param name="definition">The call tip text.</param>
         /// <remarks>
-        /// A call tip <paramref name="definition" /> should be limited to printable ASCII characters,
-        /// line feed '\n' characters, and tab '\t' characters. Any other characters will likely display incorrectly.
+        /// Call tips can contain multiple lines separated by '\n' characters. Do not include '\r', as this will most likely print as an empty box.
+        /// The '\t' character is supported and the size can be set by using <see cref="CallTipTabSize" />.
         /// </remarks>
         public unsafe void CallTipShow(int posStart, string definition)
         {
@@ -397,8 +411,9 @@ namespace ScintillaNET
             if (definition == null)
                 return;
 
+            lastCallTip = definition;
             posStart = Lines.CharToBytePosition(posStart);
-            var bytes = Helpers.GetBytes(definition, Encoding.ASCII, zeroTerminated: true);
+            var bytes = Helpers.GetBytes(definition, Encoding, zeroTerminated: true);
             fixed (byte* bp = bytes)
                 DirectMessage(NativeMethods.SCI_CALLTIPSHOW, new IntPtr(posStart), new IntPtr(bp));
         }
@@ -463,6 +478,19 @@ namespace ScintillaNET
                 pos = Lines.ByteToCharPosition(pos);
 
             return pos;
+        }
+
+        /// <summary>
+        /// Explicitly sets the current horizontal offset of the caret as the X position to track
+        /// when the user moves the caret vertically using the up and down keys.
+        /// </summary>
+        /// <remarks>
+        /// When not set explicitly, Scintilla automatically sets this value each time the user moves
+        /// the caret horizontally.
+        /// </remarks>
+        public void ChooseCaretX()
+        {
+            DirectMessage(NativeMethods.SCI_CHOOSECARETX);
         }
 
         /// <summary>
@@ -1566,7 +1594,7 @@ namespace ScintillaNET
         /// Raises the HandleCreated event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
-        protected override void OnHandleCreated(EventArgs e)
+        protected unsafe override void OnHandleCreated(EventArgs e)
         {
             // Set more intelligent defaults...
             InitDocument();
@@ -1576,6 +1604,11 @@ namespace ScintillaNET
 
             // Enable support for the call tip style and tabs
             DirectMessage(NativeMethods.SCI_CALLTIPUSESTYLE, new IntPtr(16));
+
+            // Reset the valid "word chars" to work around a bug? in Scintilla which includes those below plus non-printable (beyond ASCII 127) characters
+            var bytes = Helpers.GetBytes("abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", Encoding.ASCII, zeroTerminated: true);
+            fixed (byte* bp = bytes)
+                DirectMessage(NativeMethods.SCI_SETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
 
             // Native Scintilla uses the WM_CREATE message to register itself as an
             // IDropTarget... beating Windows Forms to the punch. There are many possible
@@ -1771,6 +1804,17 @@ namespace ScintillaNET
         protected virtual void OnUpdateUI(UpdateUIEventArgs e)
         {
             EventHandler<UpdateUIEventArgs> handler = Events[updateUIEventKey] as EventHandler<UpdateUIEventArgs>;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
+        /// Raises the <see cref="ZoomChanged" /> event.
+        /// </summary>
+        /// <param name="e">An EventArgs that contains the event data.</param>
+        protected virtual void OnZoomChanged(EventArgs e)
+        {
+            var handler = Events[zoomChangedEventKey] as EventHandler<EventArgs>;
             if (handler != null)
                 handler(this, e);
         }
@@ -2102,7 +2146,9 @@ namespace ScintillaNET
             start = Lines.CharToBytePosition(start);
             end = Lines.CharToBytePosition(end);
 
-            DirectMessage(NativeMethods.SCI_SCROLLRANGE, new IntPtr(end), new IntPtr(start));
+            // The arguments would  seem reverse from Scintilla documentation
+            // but empirical  evidence suggests this is correct....
+            DirectMessage(NativeMethods.SCI_SCROLLRANGE, new IntPtr(start), new IntPtr(end));
         }
 
         /// <summary>
@@ -2228,14 +2274,17 @@ namespace ScintillaNET
         /// <summary>
         /// Sets the application-wide behavior for destroying <see cref="Scintilla" /> controls.
         /// </summary>
-        /// <param name="reparent">true to reparent Scintilla controls to message-only windows when destroyed rather than actually destroying the control handle; otherwise, false.</param>
+        /// <param name="reparent">
+        /// true to reparent Scintilla controls to message-only windows when destroyed rather than actually destroying the control handle; otherwise, false.
+        /// The default is true.
+        /// </param>
         /// <remarks>This method must be called prior to the first <see cref="Scintilla" /> control being created.</remarks>
         public static void SetDestroyHandleBehavior(bool reparent)
         {
             // WM_DESTROY workaround
-            if (Scintilla.reparentGlobal == null)
+            if (Scintilla.reparentAll == null)
             {
-                Scintilla.reparentGlobal = reparent;
+                Scintilla.reparentAll = reparent;
             }
         }
 
@@ -2296,11 +2345,19 @@ namespace ScintillaNET
         /// <param name="currentPos">The zero-based document position to end the selection.</param>
         /// <remarks>
         /// A negative value for <paramref name="currentPos" /> signifies the end of the document.
-        /// A negative value for <paramref name="anchorPos" /> signifies no selection (set the <paramref name="anchorPos" /> to the same as the <paramref name="currentPos" />).
+        /// A negative value for <paramref name="anchorPos" /> signifies no selection (i.e. sets the <paramref name="anchorPos" />
+        /// to the same position as the <paramref name="currentPos" />).
         /// The current position is scrolled into view following this operation.
         /// </remarks>
         public void SetSel(int anchorPos, int currentPos)
         {
+            if (anchorPos == currentPos)
+            {
+                // Optimization so that we don't have to translate the anchor position
+                // when we can instead just pass -1 and have Scintilla handle it.
+                anchorPos = -1;
+            }
+
             var textLength = TextLength;
 
             if (anchorPos >= 0)
@@ -2682,6 +2739,10 @@ namespace ScintillaNET
                     case NativeMethods.SCN_INDICATORCLICK:
                     case NativeMethods.SCN_INDICATORRELEASE:
                         ScnIndicatorClick(ref scn);
+                        break;
+
+                    case NativeMethods.SCN_ZOOM:
+                        OnZoomChanged(EventArgs.Empty);
                         break;
 
                     default:
@@ -4800,6 +4861,29 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Gets or sets the last internal error code used by Scintilla.
+        /// </summary>
+        /// <returns>
+        /// One of the <see cref="Status" /> enumeration values.
+        /// The default is <see cref="ScintillaNET.Status.Ok" />.
+        /// </returns>
+        /// <remarks>The status can be reset by setting the property to <see cref="ScintillaNET.Status.Ok" />.</remarks>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Status Status
+        {
+            get
+            {
+                return (Status)DirectMessage(NativeMethods.SCI_GETSTATUS);
+            }
+            set
+            {
+                var status = (int)value;
+                DirectMessage(NativeMethods.SCI_SETSTATUS, new IntPtr(status));
+            }
+        }
+
+        /// <summary>
         /// Gets a collection representing style definitions in a <see cref="Scintilla" /> control.
         /// </summary>
         /// <returns>A collection of style definitions.</returns>
@@ -5117,11 +5201,12 @@ namespace ScintillaNET
             }
         }
 
-        /*
         /// <summary>
         /// Gets or sets the characters considered 'word' characters when using any word-based logic.
         /// </summary>
-        /// <returns>A String of word characters.</returns>
+        /// <returns>A string of word characters.</returns>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public unsafe string WordChars
         {
             get
@@ -5131,7 +5216,7 @@ namespace ScintillaNET
                 fixed (byte* bp = bytes)
                 {
                     DirectMessage(NativeMethods.SCI_GETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
-                    return Helpers.GetString(new IntPtr(bp), length, Encoding.UTF8);
+                    return Helpers.GetString(new IntPtr(bp), length, Encoding.ASCII);
                 }
             }
             set
@@ -5149,7 +5234,6 @@ namespace ScintillaNET
                     DirectMessage(NativeMethods.SCI_SETWORDCHARS, IntPtr.Zero, new IntPtr(bp));
             }
         }
-        */
 
         /// <summary>
         /// Gets or sets the line wrapping indent mode.
@@ -5936,6 +6020,23 @@ namespace ScintillaNET
             }
         }
 
+        /// <summary>
+        /// Occurs when the user zooms the display using the keyboard or the <see cref="Zoom" /> property is changed.
+        /// </summary>
+        [Category("Notifications")]
+        [Description("Occurs when the control is zoomed.")]
+        public event EventHandler<EventArgs> ZoomChanged
+        {
+            add
+            {
+                Events.AddHandler(zoomChangedEventKey, value);
+            }
+            remove
+            {
+                Events.RemoveHandler(zoomChangedEventKey, value);
+            }
+        }
+
         #endregion Events
 
         #region Constructors
@@ -5946,8 +6047,8 @@ namespace ScintillaNET
         public Scintilla()
         {
             // WM_DESTROY workaround
-            if (Scintilla.reparentGlobal.HasValue)
-                reparent = (bool)Scintilla.reparentGlobal;
+            if (Scintilla.reparentAll == null || (bool)Scintilla.reparentAll)
+                reparent = true;
 
             // We don't want .NET to use GetWindowText because we manage ('cache') our own text
             base.SetStyle(ControlStyles.CacheText, true);

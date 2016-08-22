@@ -1301,6 +1301,86 @@ namespace ScintillaNET
 
         #endregion Html
 
+        #region Json
+
+        /// <summary>
+        /// Style constants for use with the <see cref="Lexer.Json" /> lexer.
+        /// </summary>
+        public static class Json
+        {
+            /// <summary>
+            /// Default (whitespace) style index.
+            /// </summary>
+            public const int Default = NativeMethods.SCE_JSON_DEFAULT;
+
+            /// <summary>
+            /// Number style index.
+            /// </summary>
+            public const int Number = NativeMethods.SCE_JSON_NUMBER;
+
+            /// <summary>
+            /// String style index.
+            /// </summary>
+            public const int String = NativeMethods.SCE_JSON_STRING;
+
+            /// <summary>
+            /// Unclosed string EOL style index.
+            /// </summary>
+            public const int StringEol = NativeMethods.SCE_JSON_STRINGEOL;
+
+            /// <summary>
+            /// Property name style index.
+            /// </summary>
+            public const int PropertyName = NativeMethods.SCE_JSON_PROPERTYNAME;
+
+            /// <summary>
+            /// Escape sequence style index.
+            /// </summary>
+            public const int EscapeSequence = NativeMethods.SCE_JSON_ESCAPESEQUENCE;
+
+            /// <summary>
+            /// Line comment style index.
+            /// </summary>
+            public const int LineComment = NativeMethods.SCE_JSON_LINECOMMENT;
+
+            /// <summary>
+            /// Block comment style index.
+            /// </summary>
+            public const int BlockComment = NativeMethods.SCE_JSON_BLOCKCOMMENT;
+
+            /// <summary>
+            /// Operator style index.
+            /// </summary>
+            public const int Operator = NativeMethods.SCE_JSON_OPERATOR;
+
+            /// <summary>
+            /// URI style index.
+            /// </summary>
+            public const int Uri = NativeMethods.SCE_JSON_URI;
+
+            /// <summary>
+            /// Compact Internationalized Resource Identifier (IRI) style index.
+            /// </summary>
+            public const int CompactIRI = NativeMethods.SCE_JSON_COMPACTIRI;
+
+            /// <summary>
+            /// Keyword style index.
+            /// </summary>
+            public const int Keyword = NativeMethods.SCE_JSON_KEYWORD;
+
+            /// <summary>
+            /// Linked data (LD) keyword style index.
+            /// </summary>
+            public const int LdKeyword = NativeMethods.SCE_JSON_LDKEYWORD;
+
+            /// <summary>
+            /// Error style index.
+            /// </summary>
+            public const int Error = NativeMethods.SCE_JSON_ERROR;
+        }
+
+        #endregion Json
+
         #region Lisp
 
         /// <summary>
@@ -1867,6 +1947,101 @@ namespace ScintillaNET
         }
 
         #endregion PhpScript
+
+        #region PowerShell
+
+        /// <summary>
+        /// Style constants for use with the <see cref="Lexer.PowerShell" /> lexer.
+        /// </summary>
+        public static class PowerShell
+        {
+            /// <summary>
+            /// Default (whitespace) style index.
+            /// </summary>
+            public const int Default = NativeMethods.SCE_POWERSHELL_DEFAULT;
+
+            /// <summary>
+            /// Line comment style index
+            /// </summary>
+            public const int Comment = NativeMethods.SCE_POWERSHELL_COMMENT;
+
+            /// <summary>
+            /// String style index.
+            /// </summary>
+            public const int String = NativeMethods.SCE_POWERSHELL_STRING;
+
+            /// <summary>
+            /// Character style index.
+            /// </summary>
+            public const int Character = NativeMethods.SCE_POWERSHELL_CHARACTER;
+
+            /// <summary>
+            /// Number style index.
+            /// </summary>
+            public const int Number = NativeMethods.SCE_POWERSHELL_NUMBER;
+
+            /// <summary>
+            /// Variable style index.
+            /// </summary>
+            public const int Variable = NativeMethods.SCE_POWERSHELL_VARIABLE;
+
+            /// <summary>
+            /// Operator style index.
+            /// </summary>
+            public const int Operator = NativeMethods.SCE_POWERSHELL_OPERATOR;
+
+            /// <summary>
+            /// Identifier style index.
+            /// </summary>
+            public const int Identifier = NativeMethods.SCE_POWERSHELL_IDENTIFIER;
+
+            /// <summary>
+            /// Keyword (set 0) style index.
+            /// </summary>
+            public const int Keyword = NativeMethods.SCE_POWERSHELL_KEYWORD;
+
+            /// <summary>
+            /// Cmdlet (set 1) style index.
+            /// </summary>
+            public const int Cmdlet = NativeMethods.SCE_POWERSHELL_CMDLET;
+
+            /// <summary>
+            /// Alias (set 2) style index.
+            /// </summary>
+            public const int Alias = NativeMethods.SCE_POWERSHELL_ALIAS;
+
+            /// <summary>
+            /// Function (set 3) style index.
+            /// </summary>
+            public const int Function = NativeMethods.SCE_POWERSHELL_FUNCTION;
+
+            /// <summary>
+            /// User word (set 4) style index.
+            /// </summary>
+            public const int User1 = NativeMethods.SCE_POWERSHELL_USER1;
+
+            /// <summary>
+            /// Multi-line comment style index.
+            /// </summary>
+            public const int CommentStream = NativeMethods.SCE_POWERSHELL_COMMENTSTREAM;
+
+            /// <summary>
+            /// Here string style index.
+            /// </summary>
+            public const int HereString = NativeMethods.SCE_POWERSHELL_HERE_STRING;
+
+            /// <summary>
+            /// Here character style index.
+            /// </summary>
+            public const int HereCharcter = NativeMethods.SCE_POWERSHELL_HERE_CHARACTER;
+
+            /// <summary>
+            /// Comment based help keyword style index.
+            /// </summary>
+            public const int CommentDocKeyword = NativeMethods.SCE_POWERSHELL_COMMENTDOCKEYWORD;
+        }
+
+        #endregion PowerShell
 
         #region Properties
 
