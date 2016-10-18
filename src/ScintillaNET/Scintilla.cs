@@ -65,6 +65,7 @@ namespace ScintillaNET
         private static readonly object indicatorClickEventKey = new object();
         private static readonly object indicatorReleaseEventKey = new object();
         private static readonly object zoomChangedEventKey = new object();
+        private static readonly object lineSelectClickEventKey = new object();
 
         // The goods
         private IntPtr sciPtr;
@@ -1709,6 +1710,17 @@ namespace ScintillaNET
         }
 
         /// <summary>
+        /// Raises the <see cref="LineSelectClick" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="MarginClickEventArgs" /> that contains the event data.</param>
+        protected virtual void OnLineSelectClick(MarginClickEventArgs e)
+        {
+            var handler = Events[lineSelectClickEventKey] as EventHandler<MarginClickEventArgs>;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        /// <summary>
         /// Raises the <see cref="ModifyAttempt" /> event.
         /// </summary>
         /// <param name="e">An EventArgs that contains the event data.</param>
@@ -2046,6 +2058,13 @@ namespace ScintillaNET
             var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
             var eventArgs = new MarginClickEventArgs(this, keys, scn.position, scn.margin);
             OnMarginClick(eventArgs);
+        }
+
+        private void ScnLineSelectClick(ref NativeMethods.SCNotification scn)
+        {
+            var keys = Keys.Modifiers & (Keys)(scn.modifiers << 16);
+            var eventArgs = new MarginClickEventArgs(this, keys, scn.position, scn.margin);
+            OnLineSelectClick(eventArgs);
         }
 
         private void ScnModified(ref NativeMethods.SCNotification scn)
@@ -2626,6 +2645,26 @@ namespace ScintillaNET
             DirectMessage(NativeMethods.SCI_USEPOPUP, bEnablePopup);
         }
 
+        /// <summary>
+        /// Gets or sets the margin options.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="ScintillaNET.MarginOptions" /> that represents the margin options.
+        /// The default is <see cref="ScintillaNET.MarginOptions.None" />.
+        /// </returns>
+        public MarginOptions MarginOptions
+        {
+            get
+            {
+                return (MarginOptions)DirectMessage(NativeMethods.SCI_GETMARGINOPTIONS);
+            }
+            set
+            {
+                var options = (int)value;
+                DirectMessage(NativeMethods.SCI_SETMARGINOPTIONS, new IntPtr(options));
+            }
+        }
+
         private void WmDestroy(ref Message m)
         {
             // WM_DESTROY workaround
@@ -2654,7 +2693,7 @@ namespace ScintillaNET
         {
             // A standard Windows notification and a Scintilla notification header are compatible
             NativeMethods.SCNotification scn = (NativeMethods.SCNotification)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.SCNotification));
-            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_AUTOCCOMPLETED)
+            if (scn.nmhdr.code >= NativeMethods.SCN_STYLENEEDED && scn.nmhdr.code <= NativeMethods.SCN_LINESELECTCLICK)
             {
                 var handler = Events[scNotificationEventKey] as EventHandler<SCNotificationEventArgs>;
                 if (handler != null)
@@ -2688,6 +2727,10 @@ namespace ScintillaNET
 
                     case NativeMethods.SCN_MARGINCLICK:
                         ScnMarginClick(ref scn);
+                        break;
+
+                    case NativeMethods.SCN_LINESELECTCLICK:
+                        ScnLineSelectClick(ref scn);
                         break;
 
                     case NativeMethods.SCN_UPDATEUI:
@@ -5855,6 +5898,23 @@ namespace ScintillaNET
             remove
             {
                 Events.RemoveHandler(marginClickEventKey, value);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when the mouse was clicked inside the line number margin.
+        /// </summary>
+        [Category("Notifications")]
+        [Description("Occurs when the mouse is clicked in the line number margin.")]
+        public event EventHandler<MarginClickEventArgs> LineSelectClick
+        {
+            add
+            {
+                Events.AddHandler(lineSelectClickEventKey, value);
+            }
+            remove
+            {
+                Events.RemoveHandler(lineSelectClickEventKey, value);
             }
         }
 

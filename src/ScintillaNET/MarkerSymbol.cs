@@ -167,6 +167,11 @@ namespace ScintillaNET
         /// </summary>
         Bookmark = NativeMethods.SC_MARK_BOOKMARK,
 
+        /// <summary>
+        /// An extended background color that will also color the margin
+        /// </summary>
+        ExtendedBackground = NativeMethods.SC_MARK_EXT_BACKGROUND,
+
         // Character = NativeMethods.SC_MARK_CHARACTER
     }
 }
