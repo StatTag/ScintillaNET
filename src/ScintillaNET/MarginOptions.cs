@@ -20,6 +20,11 @@ namespace ScintillaNET
         /// <summary>
         /// Lines selected by clicking on the margin will select only the subline of wrapped text.
         /// </summary>
-        SublineSelect = NativeMethods.SC_MARGINOPTION_SUBLINESELECT
+        SublineSelect = NativeMethods.SC_MARGINOPTION_SUBLINESELECT,
+
+        /// <summary>
+        /// Line selection from the margin will not take place, but a click event is still sent.
+        /// </summary>
+        NoSelect = NativeMethods.SC_MARGINOPTION_NOSELECT
     }
 }

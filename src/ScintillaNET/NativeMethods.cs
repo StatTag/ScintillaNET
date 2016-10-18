@@ -182,6 +182,7 @@ namespace ScintillaNET
 
         public const int SC_MARGINOPTION_NONE = 0;
         public const int SC_MARGINOPTION_SUBLINESELECT = 1;
+        public const int SC_MARGINOPTION_NOSELECT = 2;
 
         // Markers
         public const int MARKER_MAX = 31;
@@ -217,6 +218,7 @@ namespace ScintillaNET
         public const int SC_MARK_UNDERLINE = 29;
         public const int SC_MARK_RGBAIMAGE = 30;
         public const int SC_MARK_BOOKMARK = 31;
+        public const int SC_MARK_EXT_BACKGROUND = 40;
         public const int SC_MARK_CHARACTER = 10000;
         public const int SC_MARKNUM_FOLDEREND = 25;
         public const int SC_MARKNUM_FOLDEROPENMID = 26;
@@ -1014,6 +1016,7 @@ namespace ScintillaNET
         public const int SCN_FOCUSIN = 2028;
         public const int SCN_FOCUSOUT = 2029;
         public const int SCN_AUTOCCOMPLETED = 2030;
+        public const int SCN_LINESELECTCLICK = 2080;
 
         // Line wrapping
         public const int SC_WRAP_NONE = 0;
