@@ -143,6 +143,7 @@
     <Compile Include="Eol.cs" />
     <Compile Include="FlagsEnumConverter.cs" />
     <Compile Include="FoldAction.cs" />
+    <Compile Include="FoldDisplayText.cs" />
     <Compile Include="FoldFlags.cs" />
     <Compile Include="FoldLevelFlags.cs" />
     <Compile Include="FontQuality.cs" />
@@ -183,8 +184,10 @@
     <Compile Include="NeedShownEventArgs.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Phases.cs" />
+    <Compile Include="PopupMode.cs" />
     <Compile Include="ProjectionEqualityComparer.cs" />
     <Compile Include="PropertyType.cs" />
+    <Compile Include="ScintillaReader.cs" />
     <Compile Include="SCNotificationEventArgs.cs" />
     <Compile Include="Scintilla.cs">
       <SubType>Component</SubType>
@@ -198,7 +201,9 @@
     <Compile Include="StyleCase.cs" />
     <Compile Include="StyleCollection.cs" />
     <Compile Include="StyleNeededEventArgs.cs" />
+    <Compile Include="TabDrawMode.cs" />
     <Compile Include="Technology.cs" />
+    <Compile Include="Tuple.cs" />
     <Compile Include="UpdateChange.cs" />
     <Compile Include="UpdateUIEventArgs.cs" />
     <Compile Include="VirtualSpace.cs" />
